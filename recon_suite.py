@@ -12,7 +12,7 @@ def main():
     target = input("[+] Domain: ").strip()
     threads = 20
     payload = payloads()
-    subdomains = subdomains(target, threads, "subdomains_small.txt")
+    subdomain = subdomains(target, threads, "subdomains_small.txt")
 
     with open("subdomains.txt", 'w') as f:
         f.write("\n".join(subdomains))
