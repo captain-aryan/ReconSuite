@@ -11,7 +11,7 @@ def payloads():
 def main():
     target = input("[+] Domain: ").strip()
     threads = 20
-    payloads = payloads()
+    payload = payloads()
     subdomains = subdomains(target, threads, "subdomains_small.txt")
 
     with open("subdomains.txt", 'w') as f:
