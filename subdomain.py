@@ -2,7 +2,7 @@ import requests
 import threading
 import queue
 
-def subdomais(domain, threads, wordlist):
+def subdomains(domain, threads, wordlist):
     q = queue.Queue()
     results = []
     lock = threading.Lock()
