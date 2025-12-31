@@ -4,7 +4,6 @@ import threading
 import queue
 import os
 from colorama import Fore, Style, init
-from datetime import datetime
 
 init(autoreset=True)
 
@@ -23,7 +22,7 @@ if not os.path.exists(wordlist):
     sys.exit(1)
 
 os.makedirs("recon", exist_ok=True)
-output_file = f"recon/subdomains_{host}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+output_file = f"recon/subdomains_{host}.txt"
 file_lock = threading.Lock()
 
 q = queue.Queue()
