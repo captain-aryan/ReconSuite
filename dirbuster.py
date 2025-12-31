@@ -15,8 +15,17 @@ if len(sys.argv) < 3:
     print("Usage: python dirbuster.py <url> <threads> [extension] [wordlist]")
     sys.exit(1)
 
-host = sys.argv[1].rstrip("/")
+input_host = sys.argv[1].rstrip("/")
 threads = int(sys.argv[2])
+
+if not input_host.startswith(("http://", "https://")):
+    try:
+        requests.get(f"https://{input_host}", timeout=0.5, verify=False)
+        host = f"https://{input_host}"
+    except requests.RequestException:
+        host = f"http://{input_host}"
+else:
+    host = input_host
 
 try:
     ext = sys.argv[3]

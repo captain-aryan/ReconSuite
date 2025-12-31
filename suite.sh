@@ -12,4 +12,6 @@ fi
 
 python dirbuster.py http://$domain $threads .php
 
+python web_crawler.py $domain
+
 python vuln_scanner.py $domain
