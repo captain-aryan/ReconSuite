@@ -1,35 +1,76 @@
 import requests
+import sys
 import threading
 import queue
+import os
+from colorama import Fore, Style, init
+from datetime import datetime
 
-def subdomains(domain, threads, wordlist):
-    q = queue.Queue()
-    results = []
-    lock = threading.Lock()
+init(autoreset=True)
 
-    with open(wordlist, 'r') as f:
-        for sub in f.read().splitlines():
-            if sub:
-                q.put(sub)
-    
-    def worker():
-        session = requests.Session()
-        while not q.empty():
-            sub = q.get()
-            url = f"http://{sub}.{domain}"
-            try:
-                r = session.head(url, timeout=3, allow_redirects=True)
-                if r.status_code < 400:
-                    while lock:
-                        full = f"http://{sub}.{domain}"
-                        results.append(full)
-                        print(f"[SUB] {full}")
-            except:
-                pass
-            q.task_done()
-    
-    for i in range(threads):
-        threading.Thread(target=worker, daemon=True).start()
+DEFAULT_WORDLIST = "subdomains_small.txt"
 
-    q.join()
-    return results
+if len(sys.argv) < 3:
+    print(f"{Fore.RED}Usage: python subfinder.py <domain> <threads> [wordlist]")
+    sys.exit(1)
+
+host = sys.argv[1].strip()
+threads = int(sys.argv[2])
+wordlist = sys.argv[3] if len(sys.argv) > 3 else DEFAULT_WORDLIST
+
+if not os.path.exists(wordlist):
+    print(f"{Fore.RED}[!] Wordlist not found: {wordlist}")
+    sys.exit(1)
+
+os.makedirs("recon", exist_ok=True)
+output_file = f"recon/subdomains_{host}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+file_lock = threading.Lock()
+
+q = queue.Queue()
+print_lock = threading.Lock()
+
+print(f"\n{Fore.CYAN}[+] Target    : {Fore.YELLOW}{host}")
+print(f"{Fore.CYAN}[+] Threads   : {Fore.YELLOW}{threads}")
+print(f"{Fore.CYAN}[+] Wordlist  : {Fore.YELLOW}{wordlist}\n")
+
+print(f"{Fore.CYAN}[+] {Style.RESET_ALL}Starting subdomain enumeration...\n")
+
+with open(wordlist, "r") as f:
+    for sub in f.read().splitlines():
+        if sub:
+            q.put(sub)
+
+def subbruteforce():
+    session = requests.Session()
+    while True:
+        try:
+            subdomain = q.get_nowait()
+        except queue.Empty:
+            break
+
+        url = f"http://{subdomain}.{host}"
+        try:
+            r = session.head(url, timeout=3, allow_redirects=True)
+
+            if r.status_code < 400:
+                full_domain = f"{subdomain}.{host}"
+
+                with print_lock:
+                    print(f"{Fore.GREEN}[+] Found:{Style.RESET_ALL} ", end="")
+                    print(f"{Fore.YELLOW}{subdomain}{Fore.WHITE}.{Fore.CYAN}{host}")
+
+                with file_lock:
+                    with open(output_file, 'a') as f:
+                        f.write(full_domain + "\n")
+
+        except requests.RequestException:
+            pass
+
+        q.task_done()
+
+for i in range(threads):
+    t = threading.Thread(target=subbruteforce, daemon=True)
+    t.start()
+
+q.join()
+print(f"\n{Fore.GREEN}[+] Scan completed.")
