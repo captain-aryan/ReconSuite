@@ -10,7 +10,7 @@ if [ $RET -eq 124 ]; then
     echo -e "\e[31m[-]\e[0m Subdomains not found"
 fi
 
-python dirbuster.py http://$domain $threads .php
+python dirbuster.py $domain $threads .php
 
 python web_crawler.py $domain
 

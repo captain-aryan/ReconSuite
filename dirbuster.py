@@ -106,4 +106,4 @@ for i in range(threads):
     t.start()
 
 q.join()
-print(f"\n{Fore.GREEN}[+]{Style.RESET_ALL} Scan completed.")
+print(f"\n{Fore.GREEN}[+]{Style.RESET_ALL} Scan completed.\n")
