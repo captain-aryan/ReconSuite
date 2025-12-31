@@ -10,7 +10,7 @@ init(autoreset=True)
 DEFAULT_WORDLIST = "subdomains_small.txt"
 
 if len(sys.argv) < 3:
-    print(f"{Fore.RED}Usage: python subfinder.py <domain> <threads> [wordlist]")
+    print(f"{Fore.RED}Usage: python subdomain.py <domain> <threads> [wordlist]")
     sys.exit(1)
 
 host = sys.argv[1].strip()
