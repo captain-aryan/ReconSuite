@@ -12,14 +12,20 @@ PAYLOAD_DIR = "payloads"
 
 class WebVulnerabilityScanner:
 
-    def __init__(self, target, wordlist=None):
+    def __init__(self, target, wordlist=None, output_file=None):
         self.target = target.strip()
         self.session = requests.Session()
         self.session.verify = False
         self.wordlist = wordlist
+        self.output_file = output_file
 
     def banner(self):
         print(f"{Fore.CYAN}[+]{Style.RESET_ALL} Target: {Fore.YELLOW}{self.target}")
+
+    def log(self, message):
+        if self.output_file:
+            with open(self.output_file, 'a', encoding="utf-8") as f:
+                f.write(message + "\n")
 
     def load_payloads(self, filename, fallback):
         if self.wordlist and os.path.exists(self.wordlist):
@@ -75,6 +81,8 @@ class WebVulnerabilityScanner:
                         print(f"{Fore.RED}[!]{Style.RESET_ALL} SQL Detected")
                         print(f"    Payload   : {Fore.YELLOW}{payload}")
                         print(f"    URL       : {Fore.YELLOW}{url}")
+
+                        self.log(f"[SQL] {url} | Payload={payload}")
                 except:
                     pass
 
@@ -103,6 +111,8 @@ class WebVulnerabilityScanner:
                         print(f"{Fore.RED}[!]{Style.RESET_ALL} XSS Detected")
                         print(f"    Payload   : {Fore.YELLOW}{payload}")
                         print(f"    URL       : {Fore.YELLOW}{url}")
+
+                        self.log(f"[XSS] {url} | Payload={payload}")
                 except:
                     pass
 
@@ -151,11 +161,15 @@ def main():
     if not targets:
         print(f"{Fore.RED}[-]{Style.RESET_ALL} usage: python vuln_scanner.py -u <url> [-w wordlist] [-m mode]")
         return
+    
+    os.makedirs("recon", exist_ok=True)
+    output_file = f"recon/web_vulnerabilities.txt"
 
     for target in targets:
         WebVulnerabilityScanner(
             target,
-            wordlist=args.wordlist
+            wordlist=args.wordlist,
+            output_file=output_file
         ).run(args.mode)
 
 
