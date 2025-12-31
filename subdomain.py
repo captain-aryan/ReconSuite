@@ -32,7 +32,7 @@ print(f"\n{Fore.CYAN}[+] Target    : {Fore.YELLOW}{host}")
 print(f"{Fore.CYAN}[+] Threads   : {Fore.YELLOW}{threads}")
 print(f"{Fore.CYAN}[+] Wordlist  : {Fore.YELLOW}{wordlist}\n")
 
-print(f"{Fore.CYAN}[+] {Style.RESET_ALL}Starting subdomain enumeration...\n")
+print(f"{Fore.CYAN}[+]{Style.RESET_ALL} Starting subdomain enumeration...\n")
 
 with open(wordlist, "r") as f:
     for sub in f.read().splitlines():

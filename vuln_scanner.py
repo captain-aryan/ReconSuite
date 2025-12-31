@@ -78,7 +78,7 @@ class WebVulnerabilityScanner:
                 try:
                     r = self.session.get(url, timeout=7)
                     if any(e in r.text.lower() for e in errors):
-                        print(f"{Fore.RED}[!]{Style.RESET_ALL} SQL Detected")
+                        print(f"{Fore.GREEN}[!]{Style.RESET_ALL} SQL Detected")
                         print(f"    Payload   : {Fore.YELLOW}{payload}")
                         print(f"    URL       : {Fore.YELLOW}{url}")
 
@@ -108,7 +108,7 @@ class WebVulnerabilityScanner:
                 try:
                     r = self.session.get(url, timeout=6)
                     if payload in r.text:
-                        print(f"{Fore.RED}[!]{Style.RESET_ALL} XSS Detected")
+                        print(f"{Fore.GREEN}[!]{Style.RESET_ALL} XSS Detected")
                         print(f"    Payload   : {Fore.YELLOW}{payload}")
                         print(f"    URL       : {Fore.YELLOW}{url}")
 
@@ -128,8 +128,6 @@ class WebVulnerabilityScanner:
 
         if mode in ("xss", "all"):
             self.scan_xss()
-
-        print(f"\n{Fore.GREEN}[+]{Style.RESET_ALL} Scan completed")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -172,6 +170,7 @@ def main():
             output_file=output_file
         ).run(args.mode)
 
+print(f"\n{Fore.GREEN}[+]{Style.RESET_ALL} Scan completed")
 
 if __name__ == "__main__":
     main()

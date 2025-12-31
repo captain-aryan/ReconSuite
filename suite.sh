@@ -14,4 +14,4 @@ python dirbuster.py $domain $threads .php
 
 python web_crawler.py $domain
 
-python vuln_scanner.py $domain
+python vuln_scanner.py --url-file recon/crawl_${domain//./_}.txt
