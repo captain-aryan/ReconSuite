@@ -8,7 +8,8 @@ It combines subdomain enumeration, directory
 bruteforcing, web crawling, and vulnerability scanning (SQLi & XSS) into a
 single workflow.
 
+Usage:
+./suite.sh <domain> <threads>
 
-
-Usage Example:
+Example:
 suite.sh testphp.vulnweb.com 100
