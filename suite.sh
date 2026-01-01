@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ -z "$1" ]; then
+    echo "Usage: ./suite.sh <domain> <threads>"
+    exit 1
+fi
+
 domain=$1
 threads=$2
 
